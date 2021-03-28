@@ -1,5 +1,6 @@
 # HelicalGear Plus
 
+Add-In for Autodesk Fusion360.
 Generates straight, helical and herringbone external, internal and rack gears
 as well as non-enveloping worms and worm gears.
 Parts based on Ross Korsky's Helical gear generator.    
@@ -17,7 +18,7 @@ Parts based on Ross Korsky's Helical gear generator.
 <br>
 
 # Installation
-[Get it from the App Store!](https://apps.autodesk.com/FUSION/en/Detail/Index?id=1259509007239787473&appLang=en&os=Mac) (Still on 1.0.5)
+[Get it from the App Store!](https://apps.autodesk.com/FUSION/en/Detail/Index?id=1259509007239787473&appLang=en&os=Mac)
 
 **OR**
 

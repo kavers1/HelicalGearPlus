@@ -1,17 +1,9 @@
 # positioning is relative to assembly of active component. To be checked.
 
 #TODO
-# next steps
-# v  hole in gear
-# v  key way in gear
-# v    update validate funtion
-#
 #    can we speed up the gear creation by copying teeth using circular pattern
 #       this allows fillet etc on teeth
 #
-# v   if profile shift is used the positioning is not correct should we calc the centercentercorrectioncoeff ?
-#
-#    check in internal gear position works too
 #    check rack positioning
 #
 # enhancements:
@@ -620,13 +612,6 @@ class HelicalGear(object):
         if (self._mount.keyWidth > self._mount.bore):
             return "key width to high"
         return False
-# TO DONE should we check limits on the new parameters too ??            
-# bore has to be less than the root diameter
-# bore + key has to be less than root diameter
-# key width ???
-# profile shift limits ???
-# backlash ???
-# center center ???? or is this covered by profile shift
 
     @property
     def verticalLoopSeperation(self):
@@ -661,7 +646,6 @@ class HelicalGear(object):
         return displacement / (math.tan(math.radians(90) + self.helixAngle) * (self.pitchDiameter / 2))
 
     def __str__(self):
-        # TO DO make 2 versions short version and extended based on checkbox input
         str = ''
         str += '\n'
         str += 'root diameter..............:  {0:.3f} mm\n'.format(self.rootDiameter * 10)
@@ -760,14 +744,14 @@ class HelicalGear(object):
             occurrence = parentComponent.occurrences.addNewComponent(adsk.core.Matrix3D.create())
             component = occurrence.component
             if (self.modifier.profileShift != 0 ):
-                component.name = 'Healical Gear ({0}{1}@{2:.2f} m={3} x={4:.2f})'.format(
+                component.name = 'Helical Gear ({0}{1}@{2:.2f} m={3} x={4:.2f})'.format(
                     self.toothCount,
                     'L' if self.helixAngle < 0 else 'R',
                     abs(math.degrees(self.helixAngle)),
                     round(self.normalModule * 10, 4),
                     self.modifier.profileShift)
             else:
-                component.name = 'Healical Gear ({0}{1}@{2:.2f} m={3})'.format(
+                component.name = 'Helical Gear ({0}{1}@{2:.2f} m={3})'.format(
                     self.toothCount,
                     'L' if self.helixAngle < 0 else 'R',
                     abs(math.degrees(self.helixAngle)),
@@ -818,12 +802,10 @@ class HelicalGear(object):
                 sketch.sketchCurves.sketchCircles.addByCenterRadius(adsk.core.Point3D.create(0, 0, 0),
                                                                     self.rootDiameter / 2)
                 # Center Hole
-                # TO DONE: use input parameter
                 if (self.mount.bore > 0) : 
                     sketch.sketchCurves.sketchCircles.addByCenterRadius(adsk.core.Point3D.create(0, 0, 0),
                                                                     self.mount.bore / 2 )
                 # key way
-                # TO DONE: use input parameter
                     if (self.mount.keyHeight > 0 and 
                         self.mount.keyWidth > 0):
                         centerPoint = adsk.core.Point3D.create(self.mount.bore / 2, 0, 0)
@@ -892,7 +874,6 @@ class HelicalGear(object):
                 else:
                 # generate hole in the center
                 # Center Hole
-                # TO DONE: use input parameter
                     if (self.mount.bore > 0) : 
                         cyl = cylinder = tbm.createCylinderOrCone(adsk.core.Point3D.create(0, 0, -self.width / 2),
                                                                 self.mount.bore/2,
@@ -958,9 +939,9 @@ class HelicalGear(object):
             # add attributes to component to remember when used in placement
             gear_attributes = occurrence.attributes
             if (self.internalOutsideDiameter):
-                gear_attributes.add('HelicalGear', 'type', "Gear Internal")                                      # def
+                gear_attributes.add('HelicalGear', 'type', "Gear Internal")                         # def
             else:
-                gear_attributes.add('HelicalGear', 'type', "Gear")                                      # def
+                gear_attributes.add('HelicalGear', 'type', "Gear")                                  # def
             gear_attributes.add('HelicalGear', 'module', "{0}".format(self.module))                 # def
             gear_attributes.add('HelicalGear', 'teeth', "{0}".format(self.toothCount))              # def
             gear_attributes.add('HelicalGear', 'pressureAngle', "{0}".format(self.pressureAngle))   # def
@@ -1146,7 +1127,7 @@ class RackGear:
         # Create new component
         occurrence = parentComponent.occurrences.addNewComponent(adsk.core.Matrix3D.create())
         component = occurrence.component
-        component.name = 'Healical Rack ({0}mm {1}@{2:.2f} m={3})'.format(
+        component.name = 'Helical Rack ({0}mm {1}@{2:.2f} m={3})'.format(
             self.length * 10,
             'L' if self.helixAngle < 0 else 'R',
             abs(math.degrees(self.helixAngle)),
@@ -1516,7 +1497,7 @@ class CommandCreatedHandler(adsk.core.CommandCreatedEventHandler):
             siPlane = tabPosition.children.addSelectionInput("SIPlane", "Plane", "Select Gear Plane")
             siPlane.addSelectionFilter("ConstructionPlanes")
             siPlane.addSelectionFilter("Profiles")
-            siPlane.addSelectionFilter("Faces")
+            siPlane.addSelectionFilter("PlanarFaces")
             siPlane.setSelectionLimits(0, 1)
             siPlane.tooltip = "Gear Plane"
             siPlane.tooltipDescription = "Select the plane the gear will be placed on.\n\nValid selections are:\n    Sketch Profiles\n    Construction Planes\n    BRep Faces"
